@@ -47,6 +47,6 @@ resource "libvirt_cloudinit_disk" "commoninit-internal" {
   user_data      = "${data.template_file.user_data-internal.rendered}"
 }
 # Output Server IP
-output "ip of debian-internal" {
+output "ip_debian-internal" {
   value = "${libvirt_domain.debian11-internal.network_interface.0.addresses.0}"
 }

@@ -54,10 +54,10 @@ resource "libvirt_cloudinit_disk" "commoninit1" {
   user_data      = "${data.template_file.user_data1.rendered}"
 }
 # Output Server IP
-output "ext ip of debian" {
+output "ext_ip_debian" {
   value = "${libvirt_domain.debian11.network_interface.0.addresses.0}"
 }
-output "internal ip of debian"{
+output "internal_ip_debian"{
 
   value = "${libvirt_domain.debian11.network_interface.1.addresses.0}"
 }
