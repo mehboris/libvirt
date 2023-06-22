@@ -46,6 +46,7 @@ func1(){
   mv terraform-provider-libvirt_* .terraform.d/plugins/terraform-provider-libvirt
   echo “security_driver = none” >>  /etc/libvirt/qemu.conf 
   systemctl restart libvirtd
+  ssh-keygen -t rsa -f  -f "$HOME/.ssh/id_rsa"
   /usr/bin/make apply
   terraform output -json> output_ip.txt
   ip_debian=$(jq -r .ext_ip_debian.value output_ip.txt)
