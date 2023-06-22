@@ -1,0 +1,11 @@
+#!/bin/bash
+terraform output -json>output_ip.json
+
+ip_debian=$(jq -r .ext_ip_debian.value output_ip.json)
+output_gate_debian= $(/sbin/ifconfig | grep -i 'inet 10.17.3.1' -B1 |head -n 1| awk '{print $1}')
+gate=${output_gate_debian::-1}
+iptables -I FORWARD -o $gate -d  $ip_debian/32 -j ACCEPT
+iptables -t nat -I PREROUTING -p tcp --dport 9867 -j DNAT --to $ip_debian:80
+iptables -A FORWARD -o $gate -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i $gate -o enp125s0 -j ACCEPT
+iptables -A FORWARD -i $gate -o lo -j ACCEPT

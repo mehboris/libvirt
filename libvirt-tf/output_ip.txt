@@ -1,0 +1,4 @@
+ext_ip_debian = "10.17.3.4"
+internal_ip_debian = "10.17.4.100"
+ip-cetos = "10.17.3.3"
+ip_debian-internal = "10.17.4.101"
