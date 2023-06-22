@@ -25,7 +25,7 @@ network_interface {
 
     volume_id = "${libvirt_volume.debian-qcow2.id}"
   }
-
+cloudinit = "${libvirt_cloudinit_disk.commoninit.id}"
   console {
     type = "pty"
     target_type = "serial"
@@ -38,7 +38,14 @@ network_interface {
     autoport = true
   }
 }
-
+data "template_file" "user_data1" {
+  template = "${file("${path.module}/conf-debian.cfg")}"
+}
+resource "libvirt_cloudinit_disk" "commoninit" {
+  name = "commoninit.iso"
+  pool = "default" # List storage pools using virsh pool-list
+  user_data      = "${data.template_file.user_data1.rendered}"
+}
 # Output Server IP
 output "ip2" {
   value = "${libvirt_domain.debian11.network_interface.0.addresses.0}"
