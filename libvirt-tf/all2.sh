@@ -31,7 +31,7 @@ func1(){
 	echo "You entered interface: "
 	echo $int
 	curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
-  apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" - y
+  apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" -y
   apt update -y
   apt install wget make curl unzip net-tools qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils libguestfs-tools genisoimage virtinst libosinfo-bin qemu uml-utilities virt-manager git wget libguestfs-tools p7zip-full gnupg software-properties-common terraform -y
   /usr/bin/make init
@@ -40,18 +40,21 @@ func1(){
     | grep linux_amd64.zip \
     | cut -d '"' -f 4 \
     | wget -i -
-  unzip terraform-provider-libvirt_*_linux_amd64.zip
-  rm -f terraform-provider-libvirt_*_linux_amd64.zip
   mkdir -p .terraform.d/plugins/
-  mv terraform-provider-libvirt_* .terraform.d/plugins/terraform-provider-libvirt
-  echo “security_driver = none” >>  /etc/libvirt/qemu.conf 
+  unzip -o terraform-provider-libvirt_*_linux_amd64.zip -d .terraform.d/plugins/
+  rm -f terraform-provider-libvirt_*_linux_amd64.zip
+  if grep -q "security_driver = \"none\"" /etc/libvirt/qemu.conf 
+     then echo "selinux already disabled"; 
+  else sed -i '1s/^/security_driver = "none"\n/' /etc/libvirt/qemu.conf 
+  fi
   systemctl restart libvirtd
-  ssh-keygen -t rsa -f  -f "$HOME/.ssh/id_rsa"
+  ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1
+  wget -O ../debian-internal.qcow2 https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-generic-amd64.qcow2
+  cp ../debian-internal.qcow2 ../debian-11-generic-amd64.qcow2
   /usr/bin/make apply
   terraform output -json> output_ip.txt
   ip_debian=$(jq -r .ext_ip_debian.value output_ip.txt)
-  output_gate_debian= $(/sbin/ifconfig | grep -i 'inet 10.17.3.1' -B1 |head -n 1| awk '{print $1}')
-  gate=${output_gate_debian::-1}
+  gate=`/sbin/ifconfig | grep -i 'inet 10.17.3.1' -B1 |head -n 1| awk '{print $1}'|sed 's/.$//'`
   iptables -I FORWARD -o $gate -d  $ip_debian/32 -j ACCEPT
   iptables -t nat -I PREROUTING -p tcp --dport 9867 -j DNAT --to $ip_debian:80
   iptables -A FORWARD -o $gate -m state --state RELATED,ESTABLISHED -j ACCEPT
