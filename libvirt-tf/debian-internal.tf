@@ -17,7 +17,7 @@ resource "libvirt_domain" "debian11-internal" {
 network_interface {
     network_id     = libvirt_network.net-internal.id
     hostname       = "local"
-    addresses      = ["10.17.4.101"]
+    addresses      = ["10.17.4.223"]
     mac            = "AA:BB:CC:11:22:22"
     wait_for_lease = true
   }
