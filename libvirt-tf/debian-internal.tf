@@ -2,7 +2,7 @@
 resource "libvirt_volume" "debian-internal-qcow2" {
   name = "debian11-internal.qcow2"
   pool = "default2" # List storage pools using virsh pool-list
-  source = "../../debian-internal2.qcow2"
+  source = "../debian-internal.qcow2"
   #source = "https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-generic-amd64.qcow2"
   format = "qcow2"
 }
@@ -47,6 +47,6 @@ resource "libvirt_cloudinit_disk" "commoninit-internal" {
   user_data      = "${data.template_file.user_data-internal.rendered}"
 }
 # Output Server IP
-output "ip-internal" {
+output "ip of debian-internal" {
   value = "${libvirt_domain.debian11-internal.network_interface.0.addresses.0}"
 }
