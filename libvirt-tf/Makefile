@@ -20,6 +20,7 @@ init:
 	@terraform init
 
 apply:
+	@terraform apply -target=libvirt_pool.default2 -auto-approve
 	@terraform apply -auto-approve
 
 start_debian:
