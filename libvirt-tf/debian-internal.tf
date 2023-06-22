@@ -1,9 +1,9 @@
 # Defining VM Volume
 resource "libvirt_volume" "debian-internal-qcow2" {
   name = "debian11-internal.qcow2"
-  pool = "default" # List storage pools using virsh pool-list
-  #source = "./CentOS-7-x86_64-GenericCloud.qcow2"
-  source = "https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-generic-amd64.qcow2"
+  pool = "default2" # List storage pools using virsh pool-list
+  source = "../../debian-internal2.qcow2"
+  #source = "https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-generic-amd64.qcow2"
   format = "qcow2"
 }
 
@@ -15,20 +15,12 @@ resource "libvirt_domain" "debian11-internal" {
 
 
 network_interface {
-    network_id     = libvirt_network.net1.id
-    hostname       = "master"
-    addresses      = ["10.17.3.5"]
-    mac            = "AA:BB:CC:11:33:33"
-    wait_for_lease = true
-  }
-network_interface {
     network_id     = libvirt_network.net-internal.id
     hostname       = "local"
-    addresses      = ["10.17.4.3"]
+    addresses      = ["10.17.4.101"]
     mac            = "AA:BB:CC:11:22:22"
     wait_for_lease = true
   }
-
   disk {
 
     volume_id = "${libvirt_volume.debian-internal-qcow2.id}"
@@ -51,10 +43,10 @@ data "template_file" "user_data-internal" {
 }
 resource "libvirt_cloudinit_disk" "commoninit-internal" {
   name = "commoninit-internal.iso"
-  pool = "default" # List storage pools using virsh pool-list
+  pool = "default2" # List storage pools using virsh pool-list
   user_data      = "${data.template_file.user_data-internal.rendered}"
 }
 # Output Server IP
 output "ip-internal" {
-  value = "${libvirt_domain.debian11-internal.network_interface.0.addresses}"
+  value = "${libvirt_domain.debian11-internal.network_interface.0.addresses.0}"
 }

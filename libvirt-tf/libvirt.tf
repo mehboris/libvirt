@@ -39,23 +39,8 @@ network_interface {
   }
 }
 
-resource "libvirt_pool" "default" {
-  name = "default"
-  type = "dir"
-  path = "/opt/cluster_storage"
-}
 
-
-resource "libvirt_network" "net1" {
-                    name      = "ext"
-                    mode      = "nat"
-                    domain    = "ext.local"
-                    addresses = ["10.17.3.0/24"]
-                    dhcp {
-                        enabled = true
-                    }
-}
 # Output Server IP
-output "ip" {
+output "ip-cetos" {
   value = "${libvirt_domain.centos7.network_interface.0.addresses.0}"
 }
