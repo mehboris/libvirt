@@ -41,7 +41,7 @@ cloudinit = "${libvirt_cloudinit_disk.commoninit-internal.id}"
 data "template_file" "user_data-internal" {
   template = "${file("${path.module}/conf-debian-internal.cfg")}"
   vars = {
-    ssh_pub_key = file("~/.ssh/id_rsa.pub")
+    ssh_pub_key = file("~/.ssh/hyper_key.pub")
     }
 }
 resource "libvirt_cloudinit_disk" "commoninit-internal" {
