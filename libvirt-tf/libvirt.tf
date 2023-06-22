@@ -13,11 +13,16 @@ resource "libvirt_domain" "centos7" {
   memory = "2048"
   vcpu   = 2
 
-  network_interface {
-    network_name = "default" # List networks with virsh net-list
-  }
 
+network_interface {
+    network_id     = libvirt_network.net1.id
+    hostname       = "master"
+    addresses      = ["10.17.3.3"]
+    mac            = "AA:BB:CC:11:22:22"
+    wait_for_lease = true
+  }
   disk {
+
     volume_id = "${libvirt_volume.centos7-qcow2.id}"
   }
 
@@ -41,6 +46,15 @@ resource "libvirt_pool" "default" {
 }
 
 
+resource "libvirt_network" "net1" {
+                    name      = "ext"
+                    mode      = "nat"
+                    domain    = "ext.local"
+                    addresses = ["10.17.3.0/24"]
+                    dhcp {
+                        enabled = true
+                    }
+}
 # Output Server IP
 output "ip" {
   value = "${libvirt_domain.centos7.network_interface.0.addresses.0}"
