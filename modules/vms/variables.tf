@@ -2,6 +2,10 @@ variable "domain_name" {
   description = "domain_name"
   type        = string
 }
+variable "template_path" {
+  description = "domain_name"
+  type        = string
+}
 
 variable "image_source" {
   description = "image_source"

@@ -64,6 +64,7 @@ module "debian2" {
   network_id     = libvirt_network.net-internal.id
   hostname       = "local2"
   addresses      = ["10.17.4.200"]
+  template_path = "${file("${path.module}/conf-debian-internal.cfg")}"
 }
 
 output "module_ip_debian"{

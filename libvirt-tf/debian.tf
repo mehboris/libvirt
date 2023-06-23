@@ -49,7 +49,7 @@ data "template_file" "user_data1" {
   template = "${file("${path.module}/conf-debian.cfg")}"
     vars = {
     ssh_pub_key = file("~/.ssh/hyper_key.pub")
-    ip = module.debian2.ips
+    ip = module.debian2.ip
     }
 }
 resource "libvirt_cloudinit_disk" "commoninit1" {
