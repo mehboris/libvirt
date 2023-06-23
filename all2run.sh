@@ -63,6 +63,7 @@ func1(){
   /usr/bin/make apply
   terraform output -json> output_ip.txt
   ip_debian=$(jq -r .ext_ip_debian.value output_ip.txt)
+  ip_debian_internal=$(jq -r .module_ip_debian.value output_ip.txt)
   gate=`/sbin/ifconfig | grep -i 'inet 10.17.3.1' -B1 |head -n 1| awk '{print $1}'|sed 's/.$//'`
   iptables -I FORWARD -o $gate -d  $ip_debian/32 -j ACCEPT
   iptables -t nat -I PREROUTING -p tcp --dport 9867 -j DNAT --to $ip_debian:80
@@ -75,6 +76,10 @@ func1(){
   ssh -i ~/.ssh/hyper_key -o "StrictHostKeyChecking no" -t debian@$ip_debian "sudo systemctl restart nginx"
 }
 func1
+echo -e "\033[0;36m################################################################"
+echo -e "\033[1;37mYour VMS:"
+echo "debian $ip_debian"
+echo "debian-internal $ip_debian_internal"
 if [ "$?" = "1" ]; then
   echo " failed"
   exit 1
