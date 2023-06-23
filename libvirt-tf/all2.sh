@@ -48,9 +48,14 @@ func1(){
   else sed -i '1s/^/security_driver = "none"\n/' /etc/libvirt/qemu.conf 
   fi
   systemctl restart libvirtd
-  ssh-keygen -q -t rsa -N '' -f ~/.ssh/hyper_key <<<y >/dev/null 2>&1
-  wget -O ../debian-internal.qcow2 https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-generic-amd64.qcow2
-  cp ../debian-internal.qcow2 ../debian-11-generic-amd64.qcow2
+  if [[ -f "/root/.ssh/hyper_key" ]]
+     then echo "ssh_key already exist"
+     else ssh-keygen -q -t rsa -N '' -f ~/.ssh/hyper_key <<<y >/dev/null 2>&1
+  fi
+  if [[ -f "../debian-internal.qcow2" ]] 
+     then echo "image already downloaded"
+     else wget -O ../debian-internal.qcow2 https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-generic-amd64.qcow2
+  fi 
   /usr/bin/make apply
   terraform output -json> output_ip.txt
   ip_debian=$(jq -r .ext_ip_debian.value output_ip.txt)
@@ -60,7 +65,7 @@ func1(){
   iptables -A FORWARD -o $gate -m state --state RELATED,ESTABLISHED -j ACCEPT
   iptables -A FORWARD -i $gate -o $int -j ACCEPT
   iptables -A FORWARD -i $gate -o lo -j ACCEPT
-  ssh -t debian@$ip_debian "sudo systemctl restart nginx"
+  ssh -o "StrictHostKeyChecking no" -t debian@$ip_debian "sudo systemctl restart nginx"
 }
 func1
 if [ "$?" = "1" ]; then

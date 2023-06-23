@@ -22,10 +22,14 @@ init:
 
 apply:
 	@terraform apply -target=libvirt_pool.default2 -auto-approve
+	@terraform apply -target=libvirt_domain.debian11 -auto-approve
+	@terraform apply -target=libvirt_domain.debian11-internal -auto-approve
 	@terraform apply -auto-approve
+
 
 start_debian:
 	@terraform apply -target=libvirt_domain.debian11 -auto-approve
 
 start_debian_internal:
 	@terraform apply -target=libvirt_domain.debian11-internal -auto-approve
+
