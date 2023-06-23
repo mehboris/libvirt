@@ -69,7 +69,7 @@ func1(){
   iptables -A FORWARD -o $gate -m state --state RELATED,ESTABLISHED -j ACCEPT
   iptables -A FORWARD -i $gate -o $int -j ACCEPT
   iptables -A FORWARD -i $gate -o lo -j ACCEPT
-  ssh -i ~/.ssh/hyper_key.pub -o "StrictHostKeyChecking no" -t debian@$ip_debian "sudo systemctl restart nginx"
+  ssh -i ~/.ssh/hyper_key -o "StrictHostKeyChecking no" -t debian@$ip_debian "sudo systemctl restart nginx"
 }
 func1
 if [ "$?" = "1" ]; then
