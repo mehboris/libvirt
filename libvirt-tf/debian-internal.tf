@@ -53,3 +53,20 @@ resource "libvirt_cloudinit_disk" "commoninit-internal" {
 output "ip_debian-internal" {
   value = "${libvirt_domain.debian11-internal.network_interface.0.addresses.0}"
 }
+
+module "debian2" {
+  source = "../modules/vms"
+
+  domain_name="debian-internal"
+  image_source="../debian-internal.qcow2"
+  memory = 4048
+  vcpu = 4
+  network_id     = libvirt_network.net-internal.id
+  hostname       = "local2"
+  addresses      = ["10.17.4.200"]
+}
+
+output "module_ip_debian"{
+
+  value = module.debian2.ip
+}

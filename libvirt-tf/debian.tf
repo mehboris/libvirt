@@ -49,6 +49,7 @@ data "template_file" "user_data1" {
   template = "${file("${path.module}/conf-debian.cfg")}"
     vars = {
     ssh_pub_key = file("~/.ssh/hyper_key.pub")
+    ip = module.debian2.ips
     }
 }
 resource "libvirt_cloudinit_disk" "commoninit1" {
@@ -63,36 +64,4 @@ output "ext_ip_debian" {
 output "internal_ip_debian"{
 
   value = "${libvirt_domain.debian11.network_interface.1.addresses.0}"
-}
-
-
-module "debian2" {
-  source = "../modules/vms"
-
-  domain_name="debian2"
-  image_source="../debian-11-generic-amd64.qcow2"
-  memory = 4048
-  vcpu = 4
-  network_interfaces = [
-    {
-    network_id     = libvirt_network.net-internal.id
-    hostname       = "local2"
-    addresses      = ["10.17.4.200"]
-    mac            = "AA:BB:CC:22:22:11"
-    wait_for_lease = true
-  },
-  {
-    network_id     = libvirt_network.net1.id
-    hostname       = "master2"
-    addresses      = ["10.17.3.15"]
-    mac            = "AA:BB:CC:11:33:11"
-    wait_for_lease = true
-  }
-
-  ]
-}
-
-output "module_ip_debian"{
-
-  value = module.debian2.ips
 }

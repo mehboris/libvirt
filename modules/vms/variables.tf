@@ -18,6 +18,25 @@ variable "vcpu" {
   type        = number
 }
 
-variable "network_interfaces" {
-  type = list(map(string))
+
+variable "network_id" {
+  description = "domain_name"
+  type        = string
+}
+
+variable "hostname" {
+  description = "domain_name"
+  type        = string
+}
+
+variable "addresses" {
+  description = "domain_name"
+  type        = string
+  default = ""
+}
+
+variable "mac" {
+  description = "domain_name"
+  type        = string
+  default = ""
 }

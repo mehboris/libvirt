@@ -12,16 +12,13 @@ resource "libvirt_domain" "vm" {
   memory = var.memory
   vcpu   = var.vcpu
 
-dynamic network_interface {
-    for_each = var.network_interfaces
-    content{
-        network_id     = var.network_interfaces["id"]
-        hostname       = var.network_interfaces["hostname"]
-        addresses      = var.network_interfaces["ip"]
-        mac            = var.network_interfaces["mac"]
-        wait_for_lease = true
-   }
-}
+network_interface {
+    network_id     = var.network_id
+    hostname       = var.hostname
+    addresses      = var.addresses
+    mac            = var.mac
+    wait_for_lease = true
+  }
 
   disk {
 
