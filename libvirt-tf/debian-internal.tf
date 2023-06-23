@@ -57,7 +57,7 @@ output "ip_debian-internal" {
 module "debian2" {
   source = "../modules/vms"
 
-  domain_name="debian-internal"
+  domain_name="debian-internal2"
   image_source="../debian-internal.qcow2"
   memory = 4048
   vcpu = 4
