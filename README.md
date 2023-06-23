@@ -4,6 +4,5 @@
 
 Clone repo
 
-$ cd libvirt-tf
 
 $ ./all2.sh _name_physical_interface_
