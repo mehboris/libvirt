@@ -22,6 +22,7 @@ init:
 
 apply:
 	@terraform apply -target=libvirt_pool.default2 -auto-approve
+	@terraform apply -target=libvirt_network.net1 -auto-approve
 	@terraform apply -target=module.debian2 -auto-approve
 	@terraform apply -target=libvirt_domain.debian11 -auto-approve
 	@terraform apply -auto-approve
