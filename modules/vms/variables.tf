@@ -35,7 +35,7 @@ variable "hostname" {
 
 variable "addresses" {
   description = "domain_name"
-  type        = string
+  type        = list(string)
   default = ""
 }
 
