@@ -4,8 +4,8 @@ module "debian2" {
 
   domain_name="debian-internal2"
   image_source="../debian-internal.qcow2"
-  memory = 4048
-  vcpu = 4
+  memory = 2048
+  vcpu = 2
   network_id     = libvirt_network.net-internal.id
   hostname       = "local2"
   addresses      = ["10.17.4.200"]
