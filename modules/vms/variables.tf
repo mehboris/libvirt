@@ -3,6 +3,11 @@ variable "domain_name" {
   type        = string
 }
 
+variable "template_path" {
+  description = "image_source"
+  type        = string
+}
+
 variable "image_source" {
   description = "image_source"
   type        = string
@@ -19,5 +24,11 @@ variable "vcpu" {
 }
 
 variable "network_interfaces" {
-  type = list(map(string))
+type = list(object({
+    hostname           = string
+    ip = list(string)
+    id = string
+    mac = string
+    
+  }))
 }

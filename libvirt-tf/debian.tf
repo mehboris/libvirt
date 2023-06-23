@@ -75,21 +75,14 @@ module "debian2" {
   vcpu = 4
   network_interfaces = [
     {
-    network_id     = libvirt_network.net-internal.id
+    id     = libvirt_network.net-internal.id
     hostname       = "local2"
-    addresses      = ["10.17.4.200"]
-    mac            = "AA:BB:CC:22:22:11"
-    wait_for_lease = true
-  },
-  {
-    network_id     = libvirt_network.net1.id
-    hostname       = "master2"
-    addresses      = ["10.17.3.15"]
-    mac            = "AA:BB:CC:11:33:11"
-    wait_for_lease = true
+    mac    = ""
+   ip = []
   }
 
   ]
+ template_path = "${file("${path.module}/conf-debian.cfg")}" 
 }
 
 output "module_ip_debian"{

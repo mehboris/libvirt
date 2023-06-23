@@ -1,3 +1,16 @@
+terraform {
+  required_providers {
+    libvirt = {
+      source = "dmacvicar/libvirt"
+    }
+  }
+}
+provider "libvirt" {
+  ## Configuration options
+  uri = "qemu:///system"
+  #alias = "server2"
+  #uri   = "qemu+ssh://root@192.168.100.10/system"
+}
 resource "libvirt_volume" "vm-qcow2" {
   name = "${var.domain_name}.qcow2"
   pool = "default2" # List storage pools using virsh pool-list
@@ -14,11 +27,12 @@ resource "libvirt_domain" "vm" {
 
 dynamic network_interface {
     for_each = var.network_interfaces
+iterator = item
     content{
-        network_id     = var.network_interfaces["id"]
-        hostname       = var.network_interfaces["hostname"]
-        addresses      = var.network_interfaces["ip"]
-        mac            = var.network_interfaces["mac"]
+        network_id     = item.value.id
+        hostname       = item.value.hostname
+        addresses      = item.value.ip
+        mac            = item.value.mac
         wait_for_lease = true
    }
 }
