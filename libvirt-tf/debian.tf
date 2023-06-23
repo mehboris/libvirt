@@ -91,3 +91,8 @@ module "debian2" {
 
   ]
 }
+
+output "module_ip_debian"{
+
+  value = module.debian2.ips
+}
