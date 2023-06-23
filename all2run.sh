@@ -70,6 +70,7 @@ func1(){
   iptables -A FORWARD -o $gate -m state --state RELATED,ESTABLISHED -j ACCEPT
   iptables -A FORWARD -i $gate -o $int -j ACCEPT
   iptables -A FORWARD -i $gate -o lo -j ACCEPT
+  sleep 60
   if [[ -f "$HOME/.ssh/known_hosts" ]] 
      then  ssh-keygen -f "$HOME/.ssh/known_hosts" -R "10.17.3.4"
   fi     
