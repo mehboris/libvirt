@@ -69,6 +69,7 @@ func1(){
   iptables -A FORWARD -o $gate -m state --state RELATED,ESTABLISHED -j ACCEPT
   iptables -A FORWARD -i $gate -o $int -j ACCEPT
   iptables -A FORWARD -i $gate -o lo -j ACCEPT
+  ssh-keygen -f "$HOME/.ssh/known_hosts" -R "10.17.3.4"
   ssh -i ~/.ssh/hyper_key -o "StrictHostKeyChecking no" -t debian@$ip_debian "sudo systemctl restart nginx"
 }
 func1
