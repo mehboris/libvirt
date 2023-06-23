@@ -5,4 +5,4 @@
 Clone repo
 
 
-$ ./all2.sh _name_physical_interface_
+$ ./all2run.sh _name_physical_interface_
