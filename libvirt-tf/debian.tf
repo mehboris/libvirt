@@ -10,8 +10,8 @@ resource "libvirt_volume" "debian-qcow2" {
 # Define KVM domain to create
 resource "libvirt_domain" "debian11" {
   name   = "debian"
-  memory = "4048"
-  vcpu   = 4
+  memory = "2048"
+  vcpu   = 2
 
 
 network_interface {
