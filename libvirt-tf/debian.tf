@@ -1,7 +1,7 @@
 # Defining VM Volume
 resource "libvirt_volume" "debian-qcow2" {
-  name = "debian11.qcow2"
-  pool = "default2" # List storage pools using virsh pool-list
+  name   = "debian11.qcow2"
+  pool   = "default2" # List storage pools using virsh pool-list
   source = "../debian-11-generic-amd64.qcow2"
   #source = "https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-generic-amd64.qcow2"
   format = "qcow2"
@@ -14,14 +14,14 @@ resource "libvirt_domain" "debian11" {
   vcpu   = 2
 
 
-network_interface {
+  network_interface {
     network_id     = libvirt_network.net1.id
     hostname       = "master"
     addresses      = ["10.17.3.4"]
     mac            = "AA:BB:CC:11:33:22"
     wait_for_lease = true
   }
-network_interface {
+  network_interface {
     network_id     = libvirt_network.net-internal.id
     hostname       = "local"
     addresses      = ["10.17.4.100"]
@@ -30,38 +30,38 @@ network_interface {
   }
   disk {
 
-    volume_id = "${libvirt_volume.debian-qcow2.id}"
+    volume_id = libvirt_volume.debian-qcow2.id
   }
-cloudinit = "${libvirt_cloudinit_disk.commoninit1.id}"
+  cloudinit = libvirt_cloudinit_disk.commoninit1.id
   console {
-    type = "pty"
+    type        = "pty"
     target_type = "serial"
     target_port = "0"
   }
 
   graphics {
-    type = "spice"
+    type        = "spice"
     listen_type = "address"
-    autoport = true
+    autoport    = true
   }
 }
 data "template_file" "user_data1" {
-  template = "${file("${path.module}/conf-debian.cfg")}"
-    vars = {
+  template = file("${path.module}/conf-debian.cfg")
+  vars = {
     ssh_pub_key = file("~/.ssh/hyper_key.pub")
-    ip = module.debian2.ip
-    }
+    ip          = module.debian2.ip
+  }
 }
 resource "libvirt_cloudinit_disk" "commoninit1" {
-  name = "commoninit1.iso"
-  pool = "default2" # List storage pools using virsh pool-list
-  user_data      = "${data.template_file.user_data1.rendered}"
+  name      = "commoninit1.iso"
+  pool      = "default2" # List storage pools using virsh pool-list
+  user_data = data.template_file.user_data1.rendered
 }
 # Output Server IP
 output "ext_ip_debian" {
-  value = "${libvirt_domain.debian11.network_interface.0.addresses.0}"
+  value = libvirt_domain.debian11.network_interface.0.addresses.0
 }
-output "internal_ip_debian"{
+output "internal_ip_debian" {
 
-  value = "${libvirt_domain.debian11.network_interface.1.addresses.0}"
+  value = libvirt_domain.debian11.network_interface.1.addresses.0
 }

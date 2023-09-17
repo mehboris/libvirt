@@ -1,6 +1,6 @@
 resource "libvirt_volume" "vm-qcow2" {
-  name = "${var.domain_name}.qcow2"
-  pool = "default2" # List storage pools using virsh pool-list
+  name   = "${var.domain_name}.qcow2"
+  pool   = "default2" # List storage pools using virsh pool-list
   source = var.image_source
   #source = "https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-generic-amd64.qcow2"
   format = "qcow2"
@@ -12,7 +12,7 @@ resource "libvirt_domain" "vm" {
   memory = var.memory
   vcpu   = var.vcpu
 
-network_interface {
+  network_interface {
     network_id     = var.network_id
     hostname       = var.hostname
     addresses      = var.addresses
@@ -22,29 +22,29 @@ network_interface {
 
   disk {
 
-    volume_id = "${libvirt_volume.vm-qcow2.id}"
+    volume_id = libvirt_volume.vm-qcow2.id
   }
-cloudinit = "${libvirt_cloudinit_disk.vm-commoninit.id}"
+  cloudinit = libvirt_cloudinit_disk.vm-commoninit.id
   console {
-    type = "pty"
+    type        = "pty"
     target_type = "serial"
     target_port = "0"
   }
 
   graphics {
-    type = "spice"
+    type        = "spice"
     listen_type = "address"
-    autoport = true
+    autoport    = true
   }
 }
 data "template_file" "user_data1" {
   template = var.template_path
-    vars = {
+  vars = {
     ssh_pub_key = file("~/.ssh/hyper_key.pub")
-    }
+  }
 }
 resource "libvirt_cloudinit_disk" "vm-commoninit" {
-  name = "${var.domain_name}-commoninit.iso"
-  pool = "default2" # List storage pools using virsh pool-list
-  user_data      = "${data.template_file.user_data1.rendered}"
+  name      = "${var.domain_name}-commoninit.iso"
+  pool      = "default2" # List storage pools using virsh pool-list
+  user_data = data.template_file.user_data1.rendered
 }
